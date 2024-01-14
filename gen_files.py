@@ -13,7 +13,7 @@ def count_files_in_directory(directory):
 def is_executable_by_umask(file_path):
     try:
         st = os.stat(file_path)
-        return st.st_mode & 0o111
+        return st.st_mode & 0o111 
     except OSError:
         return False
 
@@ -28,29 +28,30 @@ def list_executable_files(directory):
             file_count[permission] = file_count.get(permission, 0) + 1
     return executable_files, file_count
 
-
 def get_max_min_permissions(file_count):
-    max_files_permission = max(file_count, key=file_count.get, default='None')
-    min_files_permission = min(file_count, key=file_count.get, default='None')
-    return max_files_permission, min_files_permission
+    if not file_count:
+        return 'None', 'None'
 
+    max_files_permission = max(file_count, key=file_count.get)
+    min_files_permission = min(file_count, key=file_count.get)
+    return max_files_permission, min_files_permission
 
 def generate_permission_files(directory, num_files=None):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
     permission_mapping = {
-        '0': '---',
-        '1': '--x',
-        '2': '-w-',
-        '3': '-wx',
-        '4': 'r--',
-        '5': 'r-x',
-        '6': 'rw-',
+        '0': '___',
+        '1': '__x',
+        '2': '_w_',
+        '3': '_wx',
+        '4': 'r__',
+        '5': 'r_x',
+        '6': 'rw_',
         '7': 'rwx'
     }
 
-    if num_files is None:
+    if num_files is None: 
         for i in range(512):
             permission_octal = format(i, '03o')
             file_name = ''.join(permission_mapping[char] for char in permission_octal) + '.txt'
@@ -58,7 +59,7 @@ def generate_permission_files(directory, num_files=None):
             with open(file_path, 'w') as file:
                 file.write(f"Permission: {permission_octal}")
             os.chmod(file_path, i)
-    else:
+    else: 
         for i in range(num_files):
             permission_octal = format(random.randint(0, 511), '03o')
             file_name = f'{i:04d}' + ''.join(permission_mapping[char] for char in permission_octal) + '.txt'
