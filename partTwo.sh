@@ -16,8 +16,6 @@ mkdir -p "$directory"
 for ((i=0; i<N; i++)); do
     filename=$(generate_random_filename)
     touch "$directory/$filename"
-
-    # Generate random permission and apply
     perm=$(generate_random_permission)
     chmod "$perm" "$directory/$filename"
 done
